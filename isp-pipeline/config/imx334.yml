@@ -1,0 +1,189 @@
+pattern: "RGGB"
+bit_width: 12
+img_width: 3840
+img_height: 2160
+
+modules:
+  blc_0:
+    module_type: blc
+    black_level: 238
+
+  wb_0:
+    module_type: wb
+    white_balance: [1.8515625, 1.0, 1.0, 2.056640625]
+
+  green_equil_0:
+    module_type: green_equil
+    thresh: 1
+
+  ccm_0:
+    module_type: ccm
+    color_correction_matrix:
+      [
+        1.1119,
+        -0.3876,
+        0.2756,
+        -0.172,
+        1.3014,
+        -0.1292,
+        -0.1417,
+        -0.0114,
+        1.1531
+      ]
+  
+
+  gamma_0:
+    module_type: gamma
+    type: "rec709"
+
+  demosaic_0:
+    module_type: demosaic
+
+  ltm_0:
+    module_type: ltm
+    gray_max_ratio: 0.5
+    kernel: 240
+    stride: 120
+    gama: 709
+    frac: 3
+    local_factor: 0.875
+    clahe_limit: 0.08621
+    factor_thresh: 2.75
+
+  rgb2yuv_0:
+    module_type: color_space_conversion
+    type: rgb2yuv
+
+  bf_0:
+    module_type: bilateral_filter
+    kernel_size: 7
+    sigmas: 1.5
+    sigmar: 200
+
+  dog_0:
+    module_type: DoG
+    sigma: [3, 5]
+    gauss_kernel_size: 15
+    alpha: [10, 15]
+    halo_amount: 80
+
+  local_contrast_enhancement_0:
+    module_type: local_contrast_enhancement
+    block_h: 60
+    block_w: 60
+    interp_kernel_size: 6
+    thresh_pos: 300
+    thresh_neg: -800
+    thresh: 0
+    amount0: 1
+    amount1: 0.8
+
+  vessel_enhancement_0:
+    module_type: vessel_enhancement
+    gauss_sigma: 25
+    rgb_coef: [1, 1, 1]
+    detail_coef: 1
+
+  yuv2rgb_0:
+    module_type: color_space_conversion
+    type: yuv2rgb
+
+  rgb2hsv_0:
+    module_type: color_space_conversion
+    type: rgb2hsv
+
+  hsv2rgb_0:
+    module_type: color_space_conversion
+    type: hsv2rgb
+
+  dct_0:
+    module_type: raw_denoise
+    ak: [0.4131,0.4105,0.4147,0.421]
+    bk: [0.91,1.20,1.12,0.95]
+    bb: [7.13,12.0,11.4,9.4]
+    gain: 24.83
+    stride: 2
+    thresh: [1.3, 1.3, 1.3, 1.3]
+
+  median_filter_0:
+    module_type: median_filter
+    axis: [1, 2]
+    kernel: 7
+  
+  dpc_0:
+    module_type: dpc
+    dark_pixel_median_thresh: 1024
+    dark_pixel_median_ratio: 0.75
+    white_pixel_subsmallest_thresh: 128
+  
+  local_color_enhancement_0:
+    module_type: local_color_enhancement
+    kernel: 240
+    stride: 120
+    hue_min: 0.5
+    hue_max: 0.5
+    value_min: 256
+    value_max: 4000
+    ds_min: 0.25
+    ds_max: 3
+    alpha: 2.2
+    smooth_ratio_min: 0.2
+    smooth_ratio_max: 0.7
+
+  hsv_adjust_0:
+    module_type: hsv_adjust
+    hue_adjust_value: {'rr': 15, 'rg': 15, 'gg': 15, 'gb': 15, 'bb': 15, 'br': 15}
+    saturation_adjust_value: {'rr': 15, 'rg': 15, 'gg': 15, 'gb': 15, 'bb': 15, 'br': 15}
+    value_adjust_value: {'rr': 15, 'rg': 15, 'gg': 15, 'gb': 15, 'bb': 15, 'br': 15}
+
+  structure_enhancement_0:
+    module_type: structure_enhancement
+    run_lce: True
+    run_DoG: True
+    # dog
+    sigma: [3, 5]
+    gauss_kernel_size: 15
+    alpha: [10, 15]
+    halo_amount: 80
+    # lce
+    block_h: 60
+    block_w: 60
+    interp_kernel_size: 6
+    thresh_pos: 300
+    thresh_neg: -800
+    thresh: 0
+    amount0: 1
+    amount1: 0.8
+
+  lens_edge_detection_0:
+    module_type: lens_edge_detection
+    gauss_sigma: 5
+    gradient_thresh: 50000  
+    eps: 20
+    minpts: 5
+    if_draw: True
+
+runtime:
+  data_type: "float32"
+  device: "cuda"
+  modules: [
+      blc_0,
+      dpc_0,
+      dct_0,
+      wb_0,
+      green_equil_0,
+      ltm_0,
+      demosaic_0,
+      ccm_0,
+      gamma_0,
+      # lens_edge_detection_0,
+      # rgb2yuv_0,
+      # median_filter_0,
+      # bf_0,
+      # structure_enhancement_0,
+      # yuv2rgb_0,
+      # vessel_enhancement_0,
+      # hsv_adjust_0 
+      # rgb2hsv_0,
+      # hsv2rgb_0,
+    ]

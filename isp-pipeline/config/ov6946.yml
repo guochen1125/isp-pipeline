@@ -1,0 +1,145 @@
+pattern: "BGGR"
+bit_width: 10
+img_width: 400
+img_height: 400
+
+modules:
+  vnr_0:
+    module_type: vnr
+    smooth_thresh: 20
+    white_level: 1000
+
+  blc_0:
+    module_type: blc
+    black_level: 64
+
+  wb_0:
+    module_type: wb
+    white_balance: [1.045, 1.0, 1.0, 1.425]
+
+  green_equil_0:
+    module_type: green_equil
+    thresh: 1
+
+  ccm_0:
+    module_type: ccm
+    color_correction_matrix:
+      [1.451, -0.838, 0.387, -0.384, 1.595, -0.211, -0.097, -0.735, 1.832]
+
+  gamma_0:
+    module_type: gamma
+    type: "rec709"
+
+  demosaic_0:
+    module_type: demosaic
+
+  ltm_0:
+    module_type: ltm
+    gray_mean_ratio: 0.5
+    kernel: 80
+    stride: 40
+    local_factor: 0.5
+    clahe_thresh: 0.1
+
+  undistortion_0:
+    module_type: undistortion
+    mtx_f: [259.25,261.125]
+    mtx_c: [218.375,198.75,0.0]
+    dist_k: [-0.048095703125,-0.206298828125,0.1171875]
+    dist_p: [-0.001220703125,0.001953125]
+    undistort_channel: 1
+    undistort_depth: 10
+
+  ng_0:
+    module_type: noise_generator
+    mean: 16
+    sigma: 10
+    channel_axis: [0]
+
+  bf_0:
+    module_type: bilateral_filter
+    kernel_size: 7
+    sigmas: 1.5
+    sigmar: 200
+
+  log_0:
+    module_type: LoG
+    sigma: [1, 2, 5]
+    kernel_size: 15
+    alpha: [2, 6, 3]
+
+  rgb2yuv_0:
+    module_type: color_space_conversion
+    type: rgb2yuv
+
+  yuv2rgb_0:
+    module_type: color_space_conversion
+    type: yuv2rgb
+
+  rgb2hsv_0:
+    module_type: color_space_conversion
+    type: rgb2hsv
+
+  hsv2rgb_0:
+    module_type: color_space_conversion
+    type: hsv2rgb
+
+  dct_0:
+    module_type: raw_denoise
+    ak: [0.479, 0.451, 0.4501, 0.4693]
+    bk: [1.23, 2.61, 2.49, 1.89]
+    bb: [1.69, -1.5, -1.37, -0.6]
+    gain: 1.5
+    stride: 1
+    thresh: [1, 1, 1, 1]
+
+  median_filter_0:
+    module_type: median_filter
+    axis: [1, 2]
+    kernel: 7
+
+  dpc_0:
+    module_type: dpc
+    dark_pixel_median_thresh: 12
+    dark_pixel_median_ratio: 0.75
+    white_pixel_subsmallest_thresh: 32
+
+  dither_0:
+    module_type: dither
+    dither_space: yuv  # 'rgb' or 'yuv'
+    tamplate_z: [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
+    tamplate_0: [[0,0,0,1],[1,0,0,0],[0,0,0,1],[1,0,0,0]]
+    tamplate_1: [[0,1,0,0],[0,0,1,0],[0,1,0,0],[0,0,1,0]]
+    tamplate_2: [[1,0,0,0],[0,0,0,1],[1,0,0,0],[0,0,0,1]]
+    tamplate_3: [[0,0,1,0],[0,1,0,0],[0,0,1,0],[0,1,0,0]]
+    tamplate_4: [[1,0,1,0],[0,1,0,1],[1,0,1,0],[0,1,0,1]]
+    tamplate_5: [[0,1,0,1],[1,0,1,0],[0,1,0,1],[1,0,1,0]]
+    tamplate_6: [[1,1,1,0],[0,1,1,1],[1,1,1,0],[0,1,1,1]]
+    tamplate_7: [[1,0,1,1],[1,1,0,1],[1,0,1,1],[1,1,0,1]]
+    tamplate_8: [[0,1,1,1],[1,1,1,0],[0,1,1,1],[1,1,1,0]]
+    tamplate_9: [[1,1,0,1],[1,0,1,1],[1,1,0,1],[1,0,1,1]]
+
+runtime:
+  data_type: "float32"
+  device: "cuda"
+  modules:
+    [
+      vnr_0,
+      blc_0,
+      dpc_0,
+      # dct_0,
+      wb_0,
+      green_equil_0,
+      undistortion_0,
+      # ltm_0,
+      demosaic_0,
+      # ccm_0,
+      gamma_0,
+      rgb2yuv_0,
+      median_filter_0,
+      # bf_0,
+      log_0,
+      yuv2rgb_0,
+      rgb2hsv_0,
+      hsv2rgb_0
+    ]

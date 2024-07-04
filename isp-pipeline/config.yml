@@ -1,0 +1,16 @@
+# the path of a file or folder (all files will be processed).
+data_path: 0.dng
+
+# should be a file endwith .png or a directory to save all pngs.
+result_path: ./
+
+if_float: false
+
+# whether to save the final results as a .bin file.
+save_bin: false
+
+# whether to show profiling
+profiling: false
+
+# should specify the sensor type in folder named config (e.g., config/imx334.yml) 
+sensor: imx334
